@@ -5,7 +5,7 @@ import MainHeader from 'shared/components/Navigation/MainHeader';
 import './MainNavigation.css';
 import NavLinks from 'shared/components/Navigation/NavLinks';
 import SideDrawer from 'shared/components/Navigation/SideDrawer';
-import Backdrop from "shared/components/UIElements/Backdrop";
+import Backdrop from 'shared/components/UIElements/Backdrop';
 
 const MainNavigation = props => {
   const [drawerIsOpen, setDrawerIsOpen] = useState(false);
@@ -16,14 +16,14 @@ const MainNavigation = props => {
 
   return (
     <>
-      {drawerIsOpen && <Backdrop onClick={handleOpening}/>}
-      {drawerIsOpen && (
-        <SideDrawer>
-          <nav className="main-navigation__drawer-nav">
-            <NavLinks />
-          </nav>
-        </SideDrawer>
-      )}
+      {drawerIsOpen && <Backdrop onClick={handleOpening} />}
+
+      <SideDrawer show={drawerIsOpen}>
+        <nav className="main-navigation__drawer-nav" onClick={handleOpening}>
+          <NavLinks />
+        </nav>
+      </SideDrawer>
+
       <MainHeader>
         <button className="main-navigation__menu-btn" onClick={handleOpening}>
           <span />
