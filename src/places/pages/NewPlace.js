@@ -11,9 +11,11 @@ import Button from 'shared/components/FormElements/Button';
 
 import './NewPlace.css';
 
+const INPUT_CHANGE = 'INPUT_CHANGE';
+
 const formReducer = (state, action) => {
   switch (action.type) {
-    case 'INPUT_CHANGE':
+    case INPUT_CHANGE:
       let formIsValid = true;
       for (const inputID in state.inputs) {
         if (inputID === action.inputID) {
@@ -48,13 +50,24 @@ const NewPlace = () => {
         value: '',
         isValid: false,
       },
+      address: {
+        value: '',
+        isValid: false,
+      },
     },
     isValid: false,
   });
 
   const inputHandler = useCallback((id, value, isValid) => {
-    dispatch({ type: 'INPUT_CHANGE', value: value, isValid: isValid, inputID: id });
+    dispatch({ type: INPUT_CHANGE, value: value, isValid: isValid, inputID: id });
   }, []);
+
+  const submitHandler = event => {
+    event.preventDefault();
+    if(formState.isValid) {
+      console.log(formState.inputs);
+    }
+  };
 
   return (
     <form className="place-form">
@@ -63,7 +76,7 @@ const NewPlace = () => {
         element="input"
         type="text"
         label="Title"
-        validators={[VALIDATOR_REQUIRE, VALIDATOR_MAXLENGTH(20)]}
+        validators={[VALIDATOR_REQUIRE(), VALIDATOR_MAXLENGTH(20)]}
         errorText="Please enter a valid title"
         onInput={inputHandler}
       />
@@ -76,7 +89,15 @@ const NewPlace = () => {
         errorText="Please enter a valid description"
         onInput={inputHandler}
       />
-      <Button type="submit" disabled={!formState.isValid}>
+      <Input
+          id="address"
+          element="input"
+          label="Address"
+          validators={[VALIDATOR_REQUIRE]}
+          errorText="Please enter a valid address"
+          onInput={inputHandler}
+      />
+      <Button type="submit" onClick={submitHandler}>
         {' '}
         ADD PLACE{' '}
       </Button>
