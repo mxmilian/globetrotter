@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { DUMMY_PLACES } from 'places/pages/UserPlaces';
 import Button from 'shared/components/FormElements/Button';
@@ -27,20 +27,22 @@ const UpdatePlace = () => {
   const identifiedPlace = DUMMY_PLACES.find(p => p.id === placeID);
 
   useEffect(() => {
-    setFormData(
-      {
-        title: {
-          value: identifiedPlace.title,
-          isValid: true,
+    if (identifiedPlace) {
+      setFormData(
+        {
+          title: {
+            value: identifiedPlace.title,
+            isValid: true,
+          },
+          description: {
+            value: identifiedPlace.description,
+            isValid: true,
+          },
         },
-        description: {
-          value: identifiedPlace.description,
-          isValid: true,
-        },
-      },
-      true,
+        true,
         setIsLoading(false),
-    );
+      );
+    }
   }, [setFormData, identifiedPlace]);
 
   const submitHandler = event => {
