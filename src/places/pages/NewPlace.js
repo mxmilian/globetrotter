@@ -7,13 +7,54 @@ import {
   VALIDATOR_MINLENGTH,
 } from 'shared/util/validators';
 
+import Button from 'shared/components/FormElements/Button';
+
 import './NewPlace.css';
 
+const formReducer = (state, action) => {
+  switch (action.type) {
+    case 'INPUT_CHANGE':
+      let formIsValid = true;
+      for (const inputID in state.inputs) {
+        if (inputID === action.inputID) {
+          formIsValid = formIsValid && action.isValid;
+        } else {
+          formIsValid = formIsValid && state.inputs[inputID].isValid;
+        }
+      }
+      return {
+        ...state,
+        inputs: {
+          ...state.inputs,
+          [action.inputID]: { value: action.value, isValid: action.isValid },
+        },
+        isValid: formIsValid,
+      };
+
+    default:
+      return state;
+  }
+};
+
 const NewPlace = () => {
-  const titleInputHandler = useCallback((id, value, isValid) => {
-      console.log(id, value, isValid);
+
+  const [formState, dispatch] = useReducer(formReducer, {
+    inputs: {
+      title: {
+        value: '',
+        isValid: false,
+      },
+      description: {
+        value: '',
+        isValid: false,
+      },
+    },
+    isValid: false,
+  });
+
+  const inputHandler = useCallback((id, value, isValid) => {
+    dispatch({ type: 'INPUT_CHANGE', value: value, isValid: isValid, inputID: id });
   }, []);
-  const descriptionInputHandler = useCallback((id, value, isValid) => {}, []);
 
   return (
     <form className="place-form">
@@ -24,7 +65,7 @@ const NewPlace = () => {
         label="Title"
         validators={[VALIDATOR_REQUIRE, VALIDATOR_MAXLENGTH(20)]}
         errorText="Please enter a valid title"
-        onInput={titleInputHandler}
+        onInput={inputHandler}
       />
       <Input
         id="description"
@@ -33,8 +74,12 @@ const NewPlace = () => {
         label="Description"
         validators={[VALIDATOR_MINLENGTH(10)]}
         errorText="Please enter a valid description"
-        onInput={descriptionInputHandler}
+        onInput={inputHandler}
       />
+      <Button type="submit" disabled={!formState.isValid}>
+        {' '}
+        ADD PLACE{' '}
+      </Button>
     </form>
   );
 };
